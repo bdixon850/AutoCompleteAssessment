@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Autocomplete, TextField, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
 
+// Define types for Address and User objects
 type Address = {
   street: string;
   suite: string;
@@ -15,10 +16,12 @@ type User = {
 };
 
 const App: React.FC = () => {
+  // Define state variables
   const [users, setUsers] = useState<User[]>([]);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [options, setOptions] = useState<User[]>([]);
 
+  // Function to sort users by name
   const sortUsersByName = useCallback((data: User[]): User[] => {
     return data.slice().sort((a: User, b: User) => {
       const [lastNameA, suffixA] = extractLastNameAndSuffix(a.name);
@@ -31,6 +34,7 @@ const App: React.FC = () => {
     });
   }, []);
 
+  // Fetch users from API and sort them on component mount
   useEffect(() => {
     const fetchUsers = async () => {
       try {
@@ -49,6 +53,7 @@ const App: React.FC = () => {
     fetchUsers();
   }, [sortUsersByName]);
 
+  // Function to extract last name and suffix from user's full name
   const extractLastNameAndSuffix = (name: string): [string, string] => {
     const suffix = ['Jr.', 'Sr.', 'II', 'III', 'IV', 'V'];
     const words = name.split(' ');
@@ -63,12 +68,14 @@ const App: React.FC = () => {
     return [lastName.trim(), suffixPart];
   };
 
+  // Handler function for input change in Autocomplete component
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const input = event.target.value.toLowerCase();
     const filteredUsers = users.filter(user => user.name.toLowerCase().includes(input));
     setOptions(filteredUsers);
   };
 
+  // Function to format user name
   const formatUserName = (user: User): string => {
     const nameParts = user.name.split(' ');
     let title = '';
